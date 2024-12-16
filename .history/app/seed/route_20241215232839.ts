@@ -1,4 +1,4 @@
-/* import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { db } from '@vercel/postgres';
 import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 
@@ -45,22 +45,22 @@ async function seedInvoices() {
   const insertedInvoices = await Promise.all(
     invoices.map(
       (invoice) => client.sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-    ),
-  );
+//         INSERT INTO invoices (customer_id, amount, status, date)
+//         VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
+//         ON CONFLICT (id) DO NOTHING;
+//       `,
+//     ),
+//   );
 
-  return insertedInvoices;
-}
+//   return insertedInvoices;
+// }
 
-async function seedCustomers() {
-  await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+// async function seedCustomers() {
+//   await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-  await client.sql`
-    CREATE TABLE IF NOT EXISTS customers (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+//   await client.sql`
+//     CREATE TABLE IF NOT EXISTS customers (
+//       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
       email VARCHAR(255) NOT NULL,
       image_url VARCHAR(255) NOT NULL
@@ -75,56 +75,48 @@ async function seedCustomers() {
         ON CONFLICT (id) DO NOTHING;
       `,
     ),
-  );
+//   );
 
-  return insertedCustomers;
+//   return insertedCustomers;
+// }
+
+// async function seedRevenue() {
+//   await client.sql`
+//     CREATE TABLE IF NOT EXISTS revenue (
+//       month VARCHAR(4) NOT NULL UNIQUE,
+//       revenue INT NOT NULL
+//     );
+//   `;
+
+//   const insertedRevenue = await Promise.all(
+//     revenue.map(
+//       (rev) => client.sql`
+//         INSERT INTO revenue (month, revenue)
+//         VALUES (${rev.month}, ${rev.revenue})
+//         ON CONFLICT (month) DO NOTHING;
+//       `,
+//     ),
+//   );
+
+//   return insertedRevenue;
+// }
+
+export async function GET() {
+  return Response.json({
+    message:
+      'Uncomment this file and remove this line. You can delete this file when you are finished.',
+  });
+  // try {
+  //   await client.sql`BEGIN`;
+  //   await seedUsers();
+  //   await seedCustomers();
+  //   await seedInvoices();
+  //   await seedRevenue();
+  //   await client.sql`COMMIT`;
+
+  //   return Response.json({ message: 'Database seeded successfully' });
+  // } catch (error) {
+  //   await client.sql`ROLLBACK`;
+  //   return Response.json({ error }, { status: 500 });
+  // }
 }
-
-async function seedRevenue() {
-  await client.sql`
-    CREATE TABLE IF NOT EXISTS revenue (
-      month VARCHAR(4) NOT NULL UNIQUE,
-      revenue INT NOT NULL
-    );
-  `;
-
-  const insertedRevenue = await Promise.all(
-    revenue.map(
-      (rev) => client.sql`
-        INSERT INTO revenue (month, revenue)
-        VALUES (${rev.month}, ${rev.revenue})
-        ON CONFLICT (month) DO NOTHING;
-      `,
-    ),
-  );
-
-  return insertedRevenue;
-}
-
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const showMessage = searchParams.get('showMessage') === 'true';
-
-  if (showMessage) {
-    return Response.json({
-      message: 'Uncomment this file and remove this line. You can delete this file when you are finished.',
-    });
-  }
-
-  try {
-    await client.sql`BEGIN`;
-    await seedUsers();
-    await seedCustomers();
-    await seedInvoices();
-    await seedRevenue();
-    await client.sql`COMMIT`;
-
-    return Response.json({ message: 'Database seeded successfully' });
-  } catch (error) {
-    await client.sql`ROLLBACK`;
-    return Response.json(
-      { error: error.message || 'Internal Server Error' },
-      { status: 500 }
-    );
-  }
-} */

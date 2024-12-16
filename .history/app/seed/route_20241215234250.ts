@@ -1,4 +1,4 @@
-/* import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { db } from '@vercel/postgres';
 import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 
@@ -119,12 +119,32 @@ export async function GET(request: Request) {
     await seedRevenue();
     await client.sql`COMMIT`;
 
-    return Response.json({ message: 'Database seeded successfully' });
+    return NextResponse.json({ message: 'Database seeded successfully' });
   } catch (error) {
     await client.sql`ROLLBACK`;
-    return Response.json(
+    return NextResponse.json(
       { error: error.message || 'Internal Server Error' },
       { status: 500 }
     );
+  }
+}
+
+/* export async function GET() {
+  return Response.json({
+    message:
+      'Uncomment this file and remove this line. You can delete this file when you are finished.',
+  });
+  try {
+    await client.sql`BEGIN`;
+    await seedUsers();
+    await seedCustomers();
+    await seedInvoices();
+    await seedRevenue();
+    await client.sql`COMMIT`;
+
+    return Response.json({ message: 'Database seeded successfully' });
+  } catch (error) {
+    await client.sql`ROLLBACK`;
+    return Response.json({ error }, { status: 500 });
   }
 } */

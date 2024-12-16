@@ -1,4 +1,4 @@
-/* import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { db } from '@vercel/postgres';
 import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 
@@ -101,16 +101,39 @@ async function seedRevenue() {
   return insertedRevenue;
 }
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const showMessage = searchParams.get('showMessage') === 'true';
+export async function GET() {
+  try {
+    // Inicia la transacción
+    await client.sql`BEGIN`;
 
-  if (showMessage) {
-    return Response.json({
-      message: 'Uncomment this file and remove this line. You can delete this file when you are finished.',
-    });
+    // Ejecución de las operaciones de seed
+    await seedUsers();
+    await seedCustomers();
+    await seedInvoices();
+    await seedRevenue();
+
+    // Confirma la transacción
+    await client.sql`COMMIT`;
+
+    // Respuesta exitosa
+    return NextResponse.json({ message: 'Database seeded successfully' });
+  } catch (error) {
+    // Si ocurre un error, revierte la transacción
+    await client.sql`ROLLBACK`;
+
+    // Respuesta de error
+    return NextResponse.json(
+      { error: error.message || 'Internal Server Error' },
+      { status: 500 }
+    );
   }
+}
 
+/* export async function GET() {
+  return Response.json({
+    message:
+      'Uncomment this file and remove this line. You can delete this file when you are finished.',
+  });
   try {
     await client.sql`BEGIN`;
     await seedUsers();
@@ -122,9 +145,6 @@ export async function GET(request: Request) {
     return Response.json({ message: 'Database seeded successfully' });
   } catch (error) {
     await client.sql`ROLLBACK`;
-    return Response.json(
-      { error: error.message || 'Internal Server Error' },
-      { status: 500 }
-    );
+    return Response.json({ error }, { status: 500 });
   }
 } */
