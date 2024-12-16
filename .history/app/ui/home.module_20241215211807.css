@@ -1,0 +1,14 @@
+.shape {
+  /* height: 0; */
+  /* width: 0; */
+  border-bottom: 30px solid black;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  display: flex; /* Corresponde a "flex" */
+  height: 5rem; /* Corresponde a "h-20" */
+  flex-shrink: 0; /* Corresponde a "shrink-0" */
+  align-items: flex-end; /* Corresponde a "items-end" */
+  border-radius: 0.5rem;
+  background-color: #3b82f6; /* Corresponde a "bg-blue-500" */
+  padding: 1rem; /* Corresponde a "p-4" */
+}
